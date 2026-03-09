@@ -51,6 +51,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -e .
 
       - name: 设置 PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
