@@ -252,7 +252,15 @@ class MarketAnalyzer:
         date_str = today.strftime('%Y年%m月%d日')
 
         # 按 region 使用不同的新闻搜索词
-        search_queries = self.profile.news_queries
+        # 強制使用臺灣大盤搜尋關鍵字
+        if self.region == "tw":
+            search_queries = [
+                "台股 大盤 復盤",
+                "臺灣加權指數 行情",
+                "台股 市場 熱點 類股",
+            ]
+        else:
+            search_queries = self.profile.news_queries
         
         try:
             logger.info("[大盘] 开始搜索市场新闻...")
