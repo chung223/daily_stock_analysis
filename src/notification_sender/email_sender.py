@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Email 發送提醒服务
+Email 发送提醒服务
 
 职责：
-1. 通过 SMTP 發送 Email 訊息
+1. 通过 SMTP 发送 Email 消息
 """
 import logging
 from typing import Optional, List
@@ -22,7 +22,7 @@ from src.formatters import markdown_to_html_document
 logger = logging.getLogger(__name__)
 
 
-# SMTP 伺服器設定（自动识别）
+# SMTP 服务器配置（自动识别）
 SMTP_CONFIGS = {
     # QQ邮箱
     "qq.com": {"server": "smtp.qq.com", "port": 465, "ssl": True},
@@ -51,10 +51,10 @@ class EmailSender:
     
     def __init__(self, config: Config):
         """
-        初始化 Email 設定
+        初始化 Email 配置
 
         Args:
-            config: 設定对象
+            config: 配置对象
         """
         self._email_config = {
             'sender': config.email_sender,
@@ -65,7 +65,7 @@ class EmailSender:
         self._stock_email_groups = getattr(config, 'stock_email_groups', None) or []
         
     def _is_email_configured(self) -> bool:
-        """检查郵件設定是否完整（只需邮箱和授权码）"""
+        """检查邮件配置是否完整（只需邮箱和授权码）"""
         return bool(self._email_config['sender'] and self._email_config['password'])
     
     def get_receivers_for_stocks(self, stock_codes: List[str]) -> List[str]:
@@ -109,18 +109,18 @@ class EmailSender:
         self, content: str, subject: Optional[str] = None, receivers: Optional[List[str]] = None
     ) -> bool:
         """
-        通过 SMTP 發送郵件（自动识别 SMTP 伺服器）
+        通过 SMTP 发送邮件（自动识别 SMTP 服务器）
         
         Args:
-            content: 郵件内容（支持 Markdown，会转换为 HTML）
-            subject: 郵件主题（可选，默认自动生成）
-            receivers: 收件人列表（可选，默认使用設定的 receivers）
+            content: 邮件内容（支持 Markdown，会转换为 HTML）
+            subject: 邮件主题（可选，默认自动生成）
+            receivers: 收件人列表（可选，默认使用配置的 receivers）
             
         Returns:
-            是否發送成功
+            是否发送成功
         """
         if not self._is_email_configured():
-            logger.warning("郵件設定不完整，跳过推播")
+            logger.warning("邮件配置不完整，跳过推送")
             return False
         
         sender = self._email_config['sender']
@@ -131,24 +131,24 @@ class EmailSender:
             # 生成主题
             if subject is None:
                 date_str = datetime.now().strftime('%Y-%m-%d')
-                subject = f"📈 股票智能分析報告 - {date_str}"
+                subject = f"📈 股票智能分析报告 - {date_str}"
             
             # 将 Markdown 转换为简单 HTML
             html_content = markdown_to_html_document(content)
             
-            # 构建郵件
+            # 构建邮件
             msg = MIMEMultipart('alternative')
             msg['Subject'] = Header(subject, 'utf-8')
             msg['From'] = formataddr((self._email_config.get('sender_name', '股票分析助手'), sender))
             msg['To'] = ', '.join(receivers)
             
-            # 添加纯文字和 HTML 两个版本
+            # 添加纯文本和 HTML 两个版本
             text_part = MIMEText(content, 'plain', 'utf-8')
             html_part = MIMEText(html_content, 'html', 'utf-8')
             msg.attach(text_part)
             msg.attach(html_part)
             
-            # 自动识别 SMTP 設定
+            # 自动识别 SMTP 配置
             domain = sender.split('@')[-1].lower()
             smtp_config = SMTP_CONFIGS.get(domain)
             
@@ -158,13 +158,13 @@ class EmailSender:
                 use_ssl = smtp_config['ssl']
                 logger.info(f"自动识别邮箱类型: {domain} -> {smtp_server}:{smtp_port}")
             else:
-                # 未知邮箱，尝试通用設定
+                # 未知邮箱，尝试通用配置
                 smtp_server = f"smtp.{domain}"
                 smtp_port = 465
                 use_ssl = True
-                logger.warning(f"未知邮箱类型 {domain}，尝试通用設定: {smtp_server}:{smtp_port}")
+                logger.warning(f"未知邮箱类型 {domain}，尝试通用配置: {smtp_server}:{smtp_port}")
             
-            # 根据設定选择连接方式
+            # 根据配置选择连接方式
             if use_ssl:
                 # SSL 连接（端口 465）
                 server = smtplib.SMTP_SSL(smtp_server, smtp_port, timeout=30)
@@ -181,10 +181,10 @@ class EmailSender:
             return True
             
         except smtplib.SMTPAuthenticationError:
-            logger.error("郵件發送失敗：驗證錯誤，请检查邮箱和授权码是否正确")
+            logger.error("郵件發送失敗：認證錯誤，請檢查郵箱和授權碼是否正確")
             return False
         except smtplib.SMTPConnectError as e:
-            logger.error(f"郵件發送失敗：無法連線 SMTP 伺服器 - {e}")
+            logger.error(f"郵件發送失敗：無法連接 SMTP 服務器 - {e}")
             return False
         except Exception as e:
             logger.error(f"發送郵件失敗: {e}")
@@ -201,7 +201,7 @@ class EmailSender:
         receivers = receivers or self._email_config['receivers']
         try:
             date_str = datetime.now().strftime('%Y-%m-%d')
-            subject = f"📈 股票智能分析報告 - {date_str}"
+            subject = f"📈 股票智能分析报告 - {date_str}"
             msg = MIMEMultipart('related')
             msg['Subject'] = Header(subject, 'utf-8')
             msg['From'] = formataddr(
@@ -210,10 +210,10 @@ class EmailSender:
             msg['To'] = ', '.join(receivers)
 
             alt = MIMEMultipart('alternative')
-            alt.attach(MIMEText('報告已生成，详见下方圖片。', 'plain', 'utf-8'))
+            alt.attach(MIMEText('报告已生成，详见下方图片。', 'plain', 'utf-8'))
             html_body = (
-                '<p>報告已生成，详见下方圖片（點擊可查看大圖）：</p>'
-                '<p><img src="cid:report-image" alt="股票分析報告" style="max-width:100%%;" /></p>'
+                '<p>报告已生成，详见下方图片（点击可查看大图）：</p>'
+                '<p><img src="cid:report-image" alt="股票分析报告" style="max-width:100%%;" /></p>'
             )
             alt.attach(MIMEText(html_body, 'html', 'utf-8'))
             msg.attach(alt)
@@ -240,8 +240,8 @@ class EmailSender:
             server.login(sender, password)
             server.send_message(msg)
             server.quit()
-            logger.info("郵件（内联圖片）發送成功，收件人: %s", receivers)
+            logger.info("郵件（內聯圖片）發送成功，收件人: %s", receivers)
             return True
         except Exception as e:
-            logger.error("郵件（内联圖片）發送失敗: %s", e)
+            logger.error("郵件（內聯圖片）發送失敗: %s", e)
             return False

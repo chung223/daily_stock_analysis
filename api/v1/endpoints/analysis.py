@@ -67,9 +67,9 @@ router = APIRouter()
     responses={
         200: {"description": "分析完成（同步模式）", "model": AnalysisResultResponse},
         202: {"description": "分析任务已接受（异步模式）", "model": TaskAccepted},
-        400: {"description": "请求参数错误", "model": ErrorResponse},
-        409: {"description": "股票正在分析中，拒绝重复提交", "model": DuplicateTaskErrorResponse},
-        500: {"description": "分析失败", "model": ErrorResponse},
+        400: {"description": "請求參數錯誤", "model": ErrorResponse},
+        409: {"description": "股票正在分析中，拒絕重複提交", "model": DuplicateTaskErrorResponse},
+        500: {"description": "分析失敗", "model": ErrorResponse},
     },
     summary="触发股票分析",
     description="启动 AI 智能分析任务，支持同步和异步模式。异步模式下相同股票代码不允许重复提交。"
@@ -204,7 +204,7 @@ def _handle_sync_analysis(
                 status_code=500,
                 detail={
                     "error": "analysis_failed",
-                    "message": f"分析股票 {stock_code} 失败"
+                    "message": f"分析股票 {stock_code} 失敗"
                 }
             )
 
@@ -225,12 +225,12 @@ def _handle_sync_analysis(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"分析失败: {e}", exc_info=True)
+        logger.error(f"分析失敗: {e}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail={
                 "error": "internal_error",
-                "message": f"分析过程发生错误: {str(e)}"
+                "message": f"分析過程發生錯誤: {str(e)}"
             }
         )
 
@@ -481,12 +481,12 @@ def get_analysis_status(task_id: str) -> TaskStatus:
             )
 
     except Exception as e:
-        logger.error(f"查询任务状态失败: {e}", exc_info=True)
+        logger.error(f"查詢任務狀態失敗: {e}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail={
                 "error": "internal_error",
-                "message": f"查询任务状态失败: {str(e)}"
+                "message": f"查詢任務狀態失敗: {str(e)}"
             }
         )
 

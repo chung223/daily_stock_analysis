@@ -143,7 +143,7 @@ class MarketAnalyzer:
         indices = []
 
         try:
-            logger.info("[大盘] 获取主要指数实时行情...")
+            logger.info("[大盤] 獲取主要指數即時行情...")
 
             # 使用 DataFetcherManager 获取指数行情（按 region 切换）
             data_list = self.data_manager.get_main_indices(region=self.region)
@@ -167,19 +167,19 @@ class MarketAnalyzer:
                     indices.append(index)
 
             if not indices:
-                logger.warning("[大盘] 所有行情数据源失败，将依赖新闻搜索进行分析")
+                logger.warning("[大盤] 所有行情數據源失敗，將依賴新聞搜尋進行分析")
             else:
-                logger.info(f"[大盘] 获取到 {len(indices)} 个指数行情")
+                logger.info(f"[大盤] 獲取到 {len(indices)} 個指數行情")
 
         except Exception as e:
-            logger.error(f"[大盘] 获取指数行情失败: {e}")
+            logger.error(f"[大盤] 獲取指數行情失敗: {e}")
 
         return indices
 
     def _get_market_statistics(self, overview: MarketOverview):
         """获取市场涨跌统计"""
         try:
-            logger.info("[大盘] 获取市场涨跌统计...")
+            logger.info("[大盤] 獲取市場漲跌統計...")
 
             stats = self.data_manager.get_market_stats()
 
@@ -196,12 +196,12 @@ class MarketAnalyzer:
                           f"成交额:{overview.total_amount:.0f}亿")
 
         except Exception as e:
-            logger.error(f"[大盘] 获取涨跌统计失败: {e}")
+            logger.error(f"[大盤] 獲取漲跌統計失敗: {e}")
 
     def _get_sector_rankings(self, overview: MarketOverview):
         """获取板块涨跌榜"""
         try:
-            logger.info("[大盘] 获取板块涨跌榜...")
+            logger.info("[大盤] 獲取板塊漲跌榜...")
 
             top_sectors, bottom_sectors = self.data_manager.get_sector_rankings(5)
 
@@ -213,7 +213,7 @@ class MarketAnalyzer:
                 logger.info(f"[大盘] 领跌板块: {[s['name'] for s in overview.bottom_sectors]}")
 
         except Exception as e:
-            logger.error(f"[大盘] 获取板块涨跌榜失败: {e}")
+            logger.error(f"[大盤] 獲取板塊漲跌榜失敗: {e}")
     
     # def _get_north_flow(self, overview: MarketOverview):
     #     """获取北向资金流入"""
@@ -276,12 +276,12 @@ class MarketAnalyzer:
                 )
                 if response and response.results:
                     all_news.extend(response.results)
-                    logger.info(f"[大盘] 搜索 '{query}' 获取 {len(response.results)} 条结果")
+                    logger.info(f"[大盤] 搜尋 '{query}' 獲取 {len(response.results)} 條結果")
             
-            logger.info(f"[大盘] 共获取 {len(all_news)} 条市场新闻")
+            logger.info(f"[大盤] 共獲取 {len(all_news)} 條市場新聞")
             
         except Exception as e:
-            logger.error(f"[大盘] 搜索市场新闻失败: {e}")
+            logger.error(f"[大盤] 搜尋市場新聞失敗: {e}")
         
         return all_news
     
@@ -544,11 +544,11 @@ Output the report content directly, no extra commentary.
         # A 股场景使用中文提示语
         return f"""你是一位专业的A/H/美股市场分析师，请根据以下数据生成一份简洁的大盘复盘报告。
 
-【重要】输出要求：
-- 必须输出纯 Markdown 文本格式
-- 禁止输出 JSON 格式
-- 禁止输出代码块
-- emoji 仅在标题处少量使用（每个标题最多1个）
+【重要】輸出要求：
+- 必須輸出純 Markdown 文本格式
+- 禁止輸出 JSON 格式
+- 禁止輸出代碼塊
+- emoji 僅在標題處少量使用（每個標題最多1個）
 
 ---
 
@@ -573,7 +573,7 @@ Output the report content directly, no extra commentary.
 
 ---
 
-# 输出格式模板（请严格按此格式输出）
+# 輸出格式模板（請嚴格按此格式輸出）
 
 ## {overview.date} 大盘复盘
 
@@ -600,7 +600,7 @@ Output the report content directly, no extra commentary.
 
 ---
 
-请直接输出复盘报告内容，不要输出其他说明文字。
+請直接輸出復盤報告內容，不要輸出其他說明文字。
 """
     
     def _generate_template_review(self, overview: MarketOverview, news: List) -> str:

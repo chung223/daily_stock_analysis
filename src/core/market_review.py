@@ -46,7 +46,7 @@ def run_market_review(
     Returns:
         复盘报告文本
     """
-    logger.info("开始执行大盘复盘分析...")
+    logger.info("開始執行大盤復盤分析...")
     config = get_config()
     region = (
         override_region
@@ -65,9 +65,9 @@ def run_market_review(
             us_analyzer = MarketAnalyzer(
                 search_service=search_service, analyzer=analyzer, region='us'
             )
-            logger.info("生成 A 股大盘复盘报告...")
+            logger.info("生成 A 股大盤復盤報告...")
             cn_report = cn_analyzer.run_daily_review()
-            logger.info("生成美股大盘复盘报告...")
+            logger.info("生成美股大盤復盤報告...")
             us_report = us_analyzer.run_daily_review()
             review_report = ''
             if cn_report:
@@ -98,22 +98,22 @@ def run_market_review(
             
             # 推送通知（合并模式下跳过，由 main 层统一发送）
             if merge_notification and send_notification:
-                logger.info("合并推送模式：跳过大盘复盘单独推送，将在个股+大盘复盘后统一发送")
+                logger.info("合併推送模式：跳過大盤復盤單獨推送，將在個股+大盤復盤後統一發送")
             elif send_notification and notifier.is_available():
                 # 添加标题
                 report_content = f"🎯 大盘复盘\n\n{review_report}"
 
                 success = notifier.send(report_content, email_send_to_all=True)
                 if success:
-                    logger.info("大盘复盘推送成功")
+                    logger.info("大盤復盤推送成功")
                 else:
-                    logger.warning("大盘复盘推送失败")
+                    logger.warning("大盤復盤推送失敗")
             elif not send_notification:
                 logger.info("已跳过推送通知 (--no-notify)")
             
             return review_report
         
     except Exception as e:
-        logger.error(f"大盘复盘分析失败: {e}")
+        logger.error(f"大盤復盤分析失敗: {e}")
     
     return None

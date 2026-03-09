@@ -91,15 +91,15 @@ class Serverchan3Sender:
 
             if response.status_code == 200:
                 result = response.json()
-                logger.info(f"Server酱3 消息发送成功: {result}")
+                logger.info(f"Server醬3 消息發送成功: {result}")
                 return True
             else:
-                logger.error(f"Server酱3 请求失败: HTTP {response.status_code}")
-                logger.error(f"响应内容: {response.text}")
+                logger.error(f"Server醬3 請求失敗: HTTP {response.status_code}")
+                logger.error(f"響應內容: {response.text}")
                 return False
 
         except Exception as e:
-            logger.error(f"发送 Server酱3 消息失败: {e}")
+            logger.error(f"發送 Server醬3 消息失敗: {e}")
             import traceback
             logger.debug(traceback.format_exc())
             return False

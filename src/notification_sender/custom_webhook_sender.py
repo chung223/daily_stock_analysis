@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-自定义 Webhook 發送提醒服务
+自定义 Webhook 发送提醒服务
 
 职责：
-1. 發送自定义 Webhook 訊息
+1. 发送自定义 Webhook 消息
 """
 import logging
 import json
@@ -20,10 +20,10 @@ class CustomWebhookSender:
 
     def __init__(self, config: Config):
         """
-        初始化自定义 Webhook 設定
+        初始化自定义 Webhook 配置
 
         Args:
-            config: 設定对象
+            config: 配置对象
         """
         self._custom_webhook_urls = getattr(config, 'custom_webhook_urls', []) or []
         self._custom_webhook_bearer_token = getattr(config, 'custom_webhook_bearer_token', None)
@@ -31,26 +31,26 @@ class CustomWebhookSender:
  
     def send_to_custom(self, content: str) -> bool:
         """
-        推播訊息到自定义 Webhook
+        推送消息到自定义 Webhook
         
         支持任意接受 POST JSON 的 Webhook 端点
-        默认發送格式：{"text": "訊息内容", "content": "訊息内容"}
+        默认发送格式：{"text": "消息内容", "content": "消息内容"}
         
         适用于：
-        - 钉钉機器人
+        - 钉钉机器人
         - Discord Webhook
         - Slack Incoming Webhook
         - 自建通知服务
         - 其他支持 POST JSON 的服务
         
         Args:
-            content: 訊息内容（Markdown 格式）
+            content: 消息内容（Markdown 格式）
             
         Returns:
-            是否至少有一个 Webhook 發送成功
+            是否至少有一个 Webhook 发送成功
         """
         if not self._custom_webhook_urls:
-            logger.warning("未設定自定义 Webhook，跳过推播")
+            logger.warning("未配置自定义 Webhook，跳过推送")
             return False
         
         success_count = 0
@@ -62,27 +62,27 @@ class CustomWebhookSender:
                 # Slack 格式: {"text": "xxx"}
                 # Discord 格式: {"content": "xxx"}
                 
-                # 钉钉機器人对 body 有字节上限（约 20000 bytes），超长需要分批發送
+                # 钉钉机器人对 body 有字节上限（约 20000 bytes），超长需要分批发送
                 if self._is_dingtalk_webhook(url):
                     if self._send_dingtalk_chunked(url, content, max_bytes=20000):
-                        logger.info(f"自定义 Webhook {i+1}（钉钉）推播成功")
+                        logger.info(f"自定义 Webhook {i+1}（钉钉）推送成功")
                         success_count += 1
                     else:
-                        logger.error(f"自定义 Webhook {i+1}（钉钉）推播失敗")
+                        logger.error(f"自定義 Webhook {i+1}（釘釘）推送失敗")
                     continue
 
-                # 其他 Webhook：单次發送
+                # 其他 Webhook：單次發送
                 payload = self._build_custom_webhook_payload(url, content)
                 if self._post_custom_webhook(url, payload, timeout=30):
-                    logger.info(f"自定义 Webhook {i+1} 推播成功")
+                    logger.info(f"自定義 Webhook {i+1} 推送成功")
                     success_count += 1
                 else:
-                    logger.error(f"自定义 Webhook {i+1} 推播失敗")
+                    logger.error(f"自定義 Webhook {i+1} 推送失敗")
                     
             except Exception as e:
-                logger.error(f"自定义 Webhook {i+1} 推播异常: {e}")
+                logger.error(f"自定义 Webhook {i+1} 推送异常: {e}")
         
-        logger.info(f"自定义 Webhook 推播完成：成功 {success_count}/{len(self._custom_webhook_urls)}")
+        logger.info(f"自定义 Webhook 推送完成：成功 {success_count}/{len(self._custom_webhook_urls)}")
         return success_count > 0
 
     
@@ -97,7 +97,7 @@ class CustomWebhookSender:
             try:
                 if self._is_discord_webhook(url):
                     files = {"file": ("report.png", image_bytes, "image/png")}
-                    data = {"content": "📈 股票智能分析報告"}
+                    data = {"content": "📈 股票智能分析报告"}
                     headers = {"User-Agent": "StockAnalysis/1.0"}
                     if self._custom_webhook_bearer_token:
                         headers["Authorization"] = (
@@ -108,11 +108,11 @@ class CustomWebhookSender:
                         verify=self._webhook_verify_ssl
                     )
                     if response.status_code in (200, 204):
-                        logger.info("自定义 Webhook %d（Discord 圖片）推播成功", i + 1)
+                        logger.info("自定义 Webhook %d（Discord 图片）推送成功", i + 1)
                         success_count += 1
                     else:
                         logger.error(
-                            "自定义 Webhook %d（Discord 圖片）推播失敗: HTTP %s",
+                            "自定义 Webhook %d（Discord 图片）推送失败: HTTP %s",
                             i + 1, response.status_code,
                         )
                 else:
@@ -120,15 +120,15 @@ class CustomWebhookSender:
                         payload = self._build_custom_webhook_payload(url, fallback_content)
                         if self._post_custom_webhook(url, payload, timeout=30):
                             logger.info(
-                                "自定义 Webhook %d（圖片不支援，回退文字）推播成功", i + 1
+                                "自定义 Webhook %d（图片不支持，回退文本）推送成功", i + 1
                             )
                             success_count += 1
                     else:
                         logger.warning(
-                            "自定义 Webhook %d 不支援圖片，且无回退内容，跳过", i + 1
+                            "自定义 Webhook %d 不支持图片，且无回退内容，跳过", i + 1
                         )
             except Exception as e:
-                logger.error("自定义 Webhook %d 圖片推播异常: %s", i + 1, e)
+                logger.error("自定义 Webhook %d 图片推送异常: %s", i + 1, e)
         return success_count > 0
 
     def _post_custom_webhook(self, url: str, payload: dict, timeout: int = 30) -> bool:
@@ -143,8 +143,8 @@ class CustomWebhookSender:
         response = requests.post(url, data=body, headers=headers, timeout=timeout, verify=self._webhook_verify_ssl)
         if response.status_code == 200:
             return True
-        logger.error(f"自定义 Webhook 推播失敗: HTTP {response.status_code}")
-        logger.debug(f"响应内容: {response.text[:200]}")
+        logger.error(f"自定義 Webhook 推送失敗: HTTP {response.status_code}")
+        logger.debug(f"響應內容: {response.text[:200]}")
         return False
     
     def _build_custom_webhook_payload(self, url: str, content: str) -> dict:
@@ -155,12 +155,12 @@ class CustomWebhookSender:
         """
         url_lower = url.lower()
         
-        # 钉钉機器人
+        # 钉钉机器人
         if 'dingtalk' in url_lower or 'oapi.dingtalk.com' in url_lower:
             return {
                 "msgtype": "markdown",
                 "markdown": {
-                    "title": "股票分析報告",
+                    "title": "股票分析报告",
                     "text": content
                 }
             }
@@ -180,10 +180,10 @@ class CustomWebhookSender:
                 "mrkdwn": True
             }
         
-        # Bark (iOS 推播)
+        # Bark (iOS 推送)
         if 'api.day.app' in url_lower:
             return {
-                "title": "股票分析報告",
+                "title": "股票分析报告",
                 "body": content[:4000],  # Bark 限制
                 "group": "stock"
             }
@@ -213,7 +213,7 @@ class CustomWebhookSender:
             payload = {
                 "msgtype": "markdown",
                 "markdown": {
-                    "title": "股票分析報告",
+                    "title": "股票分析报告",
                     "text": chunk + marker,
                 },
             }
@@ -227,7 +227,7 @@ class CustomWebhookSender:
             if self._post_custom_webhook(url, payload, timeout=30):
                 ok += 1
             else:
-                logger.error(f"钉钉分批發送失敗: 第 {idx+1}/{total} 批")
+                logger.error(f"釘釘分批發送失敗: 第 {idx+1}/{total} 批")
 
             if idx < total - 1:
                 _time.sleep(1)

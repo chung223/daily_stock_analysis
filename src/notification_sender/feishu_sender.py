@@ -66,13 +66,13 @@ class FeishuSender:
         # 检查字节长度，超长则分批发送
         content_bytes = len(formatted_content.encode('utf-8'))
         if content_bytes > max_bytes:
-            logger.info(f"飞书消息内容超长({content_bytes}字节/{len(content)}字符)，将分批发送")
+            logger.info(f"飛書消息內容超長({content_bytes}字節/{len(content)}字符)，將分批發送")
             return self._send_feishu_chunked(formatted_content, max_bytes)
         
         try:
             return self._send_feishu_message(formatted_content)
         except Exception as e:
-            logger.error(f"发送飞书消息失败: {e}")
+            logger.error(f"發送飛書消息失敗: {e}")
             return False
    
     def _send_feishu_chunked(self, content: str, max_bytes: int) -> bool:
@@ -94,17 +94,17 @@ class FeishuSender:
         total_chunks = len(chunks)
         success_count = 0
         
-        logger.info(f"飞书分批发送：共 {total_chunks} 批")
+        logger.info(f"飛書分批發送：共 {total_chunks} 批")
         
         for i, chunk in enumerate(chunks):
             try:
                 if self._send_feishu_message(chunk):
                     success_count += 1
-                    logger.info(f"飞书第 {i+1}/{total_chunks} 批发送成功")
+                    logger.info(f"飛書第 {i+1}/{total_chunks} 批發送成功")
                 else:
-                    logger.error(f"飞书第 {i+1}/{total_chunks} 批发送失败")
+                    logger.error(f"飛書第 {i+1}/{total_chunks} 批發送失敗")
             except Exception as e:
-                logger.error(f"飞书第 {i+1}/{total_chunks} 批发送异常: {e}")
+                logger.error(f"飛書第 {i+1}/{total_chunks} 批發送異常: {e}")
             
             # 批次间隔，避免触发频率限制
             if i < total_chunks - 1:
@@ -115,8 +115,8 @@ class FeishuSender:
     def _send_feishu_message(self, content: str) -> bool:
         """发送单条飞书消息（优先使用 Markdown 卡片）"""
         def _post_payload(payload: Dict[str, Any]) -> bool:
-            logger.debug(f"飞书请求 URL: {self._feishu_url}")
-            logger.debug(f"飞书请求 payload 长度: {len(content)} 字符")
+            logger.debug(f"飛書請求 URL: {self._feishu_url}")
+            logger.debug(f"飛書請求 payload 長度: {len(content)} 字符")
 
             response = requests.post(
                 self._feishu_url,
@@ -132,17 +132,17 @@ class FeishuSender:
                 result = response.json()
                 code = result.get('code') if 'code' in result else result.get('StatusCode')
                 if code == 0:
-                    logger.info("飞书消息发送成功")
+                    logger.info("飛書消息發送成功")
                     return True
                 else:
-                    error_msg = result.get('msg') or result.get('StatusMessage', '未知错误')
+                    error_msg = result.get('msg') or result.get('StatusMessage', '未知錯誤')
                     error_code = result.get('code') or result.get('StatusCode', 'N/A')
-                    logger.error(f"飞书返回错误 [code={error_code}]: {error_msg}")
-                    logger.error(f"完整响应: {result}")
+                    logger.error(f"飛書返回錯誤 [code={error_code}]: {error_msg}")
+                    logger.error(f"完整響應: {result}")
                     return False
             else:
-                logger.error(f"飞书请求失败: HTTP {response.status_code}")
-                logger.error(f"响应内容: {response.text}")
+                logger.error(f"飛書請求失敗: HTTP {response.status_code}")
+                logger.error(f"響應內容: {response.text}")
                 return False
 
         # 1) 优先使用交互卡片（支持 Markdown 渲染）

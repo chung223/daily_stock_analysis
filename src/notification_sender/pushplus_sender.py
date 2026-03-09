@@ -82,17 +82,17 @@ class PushplusSender:
             if response.status_code == 200:
                 result = response.json()
                 if result.get('code') == 200:
-                    logger.info("PushPlus 消息发送成功")
+                    logger.info("PushPlus 消息發送成功")
                     return True
                 else:
-                    error_msg = result.get('msg', '未知错误')
-                    logger.error(f"PushPlus 返回错误: {error_msg}")
+                    error_msg = result.get('msg', '未知錯誤')
+                    logger.error(f"PushPlus 返回錯誤: {error_msg}")
                     return False
             else:
-                logger.error(f"PushPlus 请求失败: HTTP {response.status_code}")
+                logger.error(f"PushPlus 請求失敗: HTTP {response.status_code}")
                 return False
 
         except Exception as e:
-            logger.error(f"发送 PushPlus 消息失败: {e}")
+            logger.error(f"發送 PushPlus 消息失敗: {e}")
             return False
    

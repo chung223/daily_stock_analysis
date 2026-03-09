@@ -163,7 +163,7 @@ def get_stock_name_multi_source(
                 STOCK_NAME_MAP[stock_code] = name
                 return name
         except Exception as e:
-            logger.debug(f"从数据源获取股票名称失败: {e}")
+            logger.debug(f"從數據源獲取股票名稱失敗: {e}")
 
     # 4. 返回默认名称
     return f'股票{stock_code}'
@@ -759,10 +759,10 @@ class GeminiAnalyzer:
         code = context.get('code', 'Unknown')
         config = get_config()
         
-        # 请求前增加延时（防止连续请求触发限流）
+        # 請求前增加延時（防止連續請求觸發限流）
         request_delay = config.gemini_request_delay
         if request_delay > 0:
-            logger.debug(f"[LLM] 请求前等待 {request_delay:.1f} 秒...")
+            logger.debug(f"[LLM] 請求前等待 {request_delay:.1f} 秒...")
             time.sleep(request_delay)
         
         # 优先从上下文获取股票名称（由 main.py 传入）
@@ -784,8 +784,8 @@ class GeminiAnalyzer:
                 trend_prediction='震荡',
                 operation_advice='持有',
                 confidence_level='低',
-                analysis_summary='AI 分析功能未启用（未配置 API Key）',
-                risk_warning='请配置 LLM API Key（GEMINI_API_KEY/ANTHROPIC_API_KEY/OPENAI_API_KEY）后重试',
+                analysis_summary='AI 分析功能未啟用（未配置 API Key）',
+                risk_warning='請配置 LLM API Key（GEMINI_API_KEY/ANTHROPIC_API_KEY/OPENAI_API_KEY）後重試',
                 success=False,
                 error_message='LLM API Key 未配置',
                 model_used=None,
@@ -799,12 +799,12 @@ class GeminiAnalyzer:
             model_name = config.litellm_model or "unknown"
             logger.info(f"========== AI 分析 {name}({code}) ==========")
             logger.info(f"[LLM配置] 模型: {model_name}")
-            logger.info(f"[LLM配置] Prompt 长度: {len(prompt)} 字符")
-            logger.info(f"[LLM配置] 是否包含新闻: {'是' if news_context else '否'}")
+            logger.info(f"[LLM配置] Prompt 長度: {len(prompt)} 字符")
+            logger.info(f"[LLM配置] 是否包含新聞: {'是' if news_context else '否'}")
 
-            # 记录完整 prompt 到日志（INFO级别记录摘要，DEBUG记录完整）
+            # 記錄完整 prompt 到日誌（INFO級別記錄摘要，DEBUG記錄完整）
             prompt_preview = prompt[:500] + "..." if len(prompt) > 500 else prompt
-            logger.info(f"[LLM Prompt 预览]\n{prompt_preview}")
+            logger.info(f"[LLM Prompt 預覽]\n{prompt_preview}")
             logger.debug(f"=== 完整 Prompt ({len(prompt)}字符) ===\n{prompt}\n=== End Prompt ===")
 
             # 设置生成配置
@@ -813,20 +813,20 @@ class GeminiAnalyzer:
                 "max_output_tokens": 8192,
             }
 
-            logger.info(f"[LLM调用] 开始调用 {model_name}...")
+            logger.info(f"[LLM调用] 開始調用 {model_name}...")
 
             # 使用 litellm 调用
             start_time = time.time()
             response_text, model_used = self._call_litellm(prompt, generation_config)
             elapsed = time.time() - start_time
 
-            # 记录响应信息
-            logger.info(f"[LLM返回] {model_name} 响应成功, 耗时 {elapsed:.2f}s, 响应长度 {len(response_text)} 字符")
+            # 記錄響應信息
+            logger.info(f"[LLM返回] {model_name} 響應成功, 耗時 {elapsed:.2f}s, 響應長度 {len(response_text)} 字符")
             
-            # 记录响应预览（INFO级别）和完整响应（DEBUG级别）
+            # 記錄響應預覽（INFO級別）和完整響應（DEBUG級別）
             response_preview = response_text[:300] + "..." if len(response_text) > 300 else response_text
-            logger.info(f"[LLM返回 预览]\n{response_preview}")
-            logger.debug(f"=== {model_name} 完整响应 ({len(response_text)}字符) ===\n{response_text}\n=== End Response ===")
+            logger.info(f"[LLM返回 預覽]\n{response_preview}")
+            logger.debug(f"=== {model_name} 完整響應 ({len(response_text)}字符) ===\n{response_text}\n=== End Response ===")
             
             # 解析响应
             result = self._parse_response(response_text, code, name)
@@ -835,12 +835,12 @@ class GeminiAnalyzer:
             result.market_snapshot = self._build_market_snapshot(context)
             result.model_used = model_used
 
-            logger.info(f"[LLM解析] {name}({code}) 分析完成: {result.trend_prediction}, 评分 {result.sentiment_score}")
+            logger.info(f"[LLM解析] {name}({code}) 分析完成: {result.trend_prediction}, 評分 {result.sentiment_score}")
             
             return result
             
         except Exception as e:
-            logger.error(f"AI 分析 {name}({code}) 失败: {e}")
+            logger.error(f"AI 分析 {name}({code}) 失敗: {e}")
             return AnalysisResult(
                 code=code,
                 name=name,
@@ -848,8 +848,8 @@ class GeminiAnalyzer:
                 trend_prediction='震荡',
                 operation_advice='持有',
                 confidence_level='低',
-                analysis_summary=f'分析过程出错: {str(e)[:100]}',
-                risk_warning='分析失败，请稍后重试或手动分析',
+                analysis_summary=f'分析過程出錯: {str(e)[:100]}',
+                risk_warning='分析失敗，請稍後重試或手動分析',
                 success=False,
                 error_message=str(e),
                 model_used=None,
@@ -881,7 +881,7 @@ class GeminiAnalyzer:
         today = context.get('today', {})
         
         # ========== 构建决策仪表盘格式的输入 ==========
-        prompt = f"""# 决策仪表盘分析请求
+        prompt = f"""# 決策儀表盤分析請求
 
 ## 📊 股票基础信息
 | 项目 | 数据 |
@@ -1235,7 +1235,7 @@ class GeminiAnalyzer:
                 return self._parse_text_response(response_text, code, name)
                 
         except json.JSONDecodeError as e:
-            logger.warning(f"JSON 解析失败: {e}，尝试从文本提取")
+            logger.warning(f"JSON 解析失敗: {e}，嘗試從文本提取")
             return self._parse_text_response(response_text, code, name)
     
     def _fix_json_string(self, json_str: str) -> str:
@@ -1304,7 +1304,7 @@ class GeminiAnalyzer:
             decision_type=decision_type,
             confidence_level='低',
             analysis_summary=summary,
-            key_points='JSON解析失败，仅供参考',
+            key_points='JSON解析失敗，僅供參考',
             risk_warning='分析结果可能不准确，建议结合其他信息判断',
             raw_response=response_text,
             success=True,
