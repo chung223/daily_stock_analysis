@@ -43,6 +43,11 @@ from .us_index_mapping import (
     US_INDEX_MAPPING,
     is_tw_stock_code,
     get_tw_stock_yf_symbol,
+    is_tw_index_code,
+    get_tw_index_yf_symbol,
+    get_tw_stock_name,
+    TW_STOCK_NAME_MAPPING,
+    TW_INDEX_MAPPING,
 )
 
 __all__ = [
@@ -61,4 +66,9 @@ __all__ = [
     'US_INDEX_MAPPING',
     'is_tw_stock_code',
     'get_tw_stock_yf_symbol',
+    'is_tw_index_code',
+    'get_tw_index_yf_symbol',
+    'get_tw_stock_name',
+    'TW_STOCK_NAME_MAPPING',
+    'TW_INDEX_MAPPING',
 ]

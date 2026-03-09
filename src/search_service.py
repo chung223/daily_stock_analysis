@@ -981,18 +981,22 @@ class SearchService:
     
     @staticmethod
     def _is_foreign_stock(stock_code: str) -> bool:
-        """判断是否为港股或美股"""
+        """判断是否为港股或美股（排除台股）"""
         import re
         code = stock_code.strip()
         # 美股：1-5个大写字母，可能包含点（如 BRK.B）
         if re.match(r'^[A-Za-z]{1,5}(\.[A-Za-z])?$', code):
             return True
-        # 港股：带 hk 前缀或 5位纯数字
+        # 港股：带 hk 前缀
         lower = code.lower()
         if lower.startswith('hk'):
             return True
+        # 港股：5位纯数字（排除台股ETF如0050）
         if code.isdigit() and len(code) == 5:
-            return True
+            # 排除台股ETF代码（00开头如0050、0051等）
+            if code.startswith('00'):
+                return False  # 台股
+            return True  # 港股
         return False
 
     # A-share ETF code prefixes (Shanghai 51/52/56/58, Shenzhen 15/16/18)

@@ -21,6 +21,78 @@ _US_STOCK_PATTERN = re.compile(r'^[A-Z]{1,5}(\.[A-Z])?$')
 # 台股代码正则：4-6 位数字
 _TW_STOCK_PATTERN = re.compile(r'^\d{4,6}$')
 
+# 台股名称映射（代码 -> 中文名称）
+TW_STOCK_NAME_MAPPING = {
+    # 半导体/电子
+    '2330': '台积电',
+    '2317': '鸿海',
+    '2454': '联发科',
+    '3034': '联咏',
+    '3711': '日月光投控',
+    '5347': '世界先进',
+    '5388': '威盛电子',
+    '5471': '松翰',
+    '6136': '平价',
+    
+    # 金融
+    '2881': '富邦金',
+    '2882': '国泰金',
+    '2883': '开发金',
+    '2884': '玉山金',
+    '2885': '元大金',
+    '2886': '兆丰金',
+    '2887': '台新金',
+    '2888': '新光金',
+    '2891': '中信金',
+    '2892': '第一金',
+    
+    # 传产/航运
+    '2618': '长荣航',
+    '2609': '阳明',
+    '2207': '和泰车',
+    '2002': '中钢',
+    
+    # ETF
+    '0050': '元大台灣50',
+    '0051': '元大中型100',
+    '0052': '富邦科技',
+    '0053': '元化高息',
+    '0054': '元大炬',
+    '0055': '元大高股息',
+    '0056': '元大高股息低波',
+    '0057': '富邦摩台',
+    '0058': '富邦发达',
+    '0059': '富邦金融',
+    '00646': '元大台灣50正2',
+    '00647L': '元大高股息100',
+    '00690': '中信高股息100',
+    
+    # 权重股
+    '2303': '联电',
+    '2308': '台达电',
+    '2412': '中华电',
+    '2812': '中ky',
+    '4904': '远传',
+    '8046': '南亚科',
+    
+    # 其他热门
+    '6182': '合晶',
+    '3406': '玉晶光',
+    '3533': '嘉泽',
+    '3661': '世芯-KY',
+    '3702': '大立光',
+    '6515': '颖崴',
+}
+
+# 台股指數映射
+TW_INDEX_MAPPING = {
+    'TWII': ('^TWII', '加权指数'),
+    '^TWII': ('^TWII', '加权指数'),
+    'TAIEX': ('^TWII', '加权指数'),
+    '加权指数': ('^TWII', '加权指数'),
+    '台股': ('^TWII', '加权指数'),
+}
+
 
 # 用户输入 -> (Yahoo Finance 符号, 中文名称)
 US_INDEX_MAPPING = {
@@ -155,6 +227,52 @@ def is_tw_stock_code(code: str) -> bool:
     return True
 
 
+def is_tw_index_code(code: str) -> bool:
+    """
+    判断代码是否为台股指数符号。
+
+    Args:
+        code: 指数代码，如 'TWII', 'TAIEX', '^TWII'
+
+    Returns:
+        True 表示是已知台股指数符号，否则 False
+
+    Examples:
+        >>> is_tw_index_code('TWII')
+        True
+        >>> is_tw_index_code('^TWII')
+        True
+        >>> is_tw_index_code('0050')
+        False
+    """
+    return (code or '').strip().upper() in TW_INDEX_MAPPING
+
+
+def get_tw_stock_name(code: str) -> str:
+    """
+    获取台股的中文名称。
+
+    Args:
+        code: 台股代码，如 '2330', '0050'
+
+    Returns:
+        中文名称，未找到时返回 None
+
+    Examples:
+        >>> get_tw_stock_name('2330')
+        '台积电'
+        >>> get_tw_stock_name('0050')
+        '元大台灣50'
+    """
+    normalized = (code or '').strip()
+    
+    # 移除 tw 前缀
+    if normalized.lower().startswith('tw'):
+        normalized = normalized[2:]
+    
+    return TW_STOCK_NAME_MAPPING.get(normalized)
+
+
 def get_tw_stock_yf_symbol(code: str) -> tuple:
     """
     获取台股的 Yahoo Finance 符号与中文名称。
@@ -182,7 +300,28 @@ def get_tw_stock_yf_symbol(code: str) -> tuple:
     if not is_tw_stock_code(code):
         return (None, None)
     
-    return (f"{normalized}.TW", None)
+    chinese_name = get_tw_stock_name(normalized)
+    return (f"{normalized}.TW", chinese_name)
+
+
+def get_tw_index_yf_symbol(code: str) -> tuple:
+    """
+    获取台股指数的 Yahoo Finance 符号与中文名称。
+
+    Args:
+        code: 用户输入，如 'TWII', 'TAIEX', '^TWII'
+
+    Returns:
+        (yf_symbol, chinese_name) 元组，未找到时返回 (None, None)。
+
+    Examples:
+        >>> get_tw_index_yf_symbol('TWII')
+        ('^TWII', '加权指数')
+        >>> get_tw_index_yf_symbol('0050')
+        (None, None)
+    """
+    normalized = (code or '').strip().upper()
+    return TW_INDEX_MAPPING.get(normalized, (None, None))
 
 
 def get_us_index_yf_symbol(code: str) -> tuple:
