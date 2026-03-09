@@ -51,7 +51,11 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-      
+          • 找到 `pip install -r requirements.txt`（第 53 行）
+
+      - name: 设置 PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+
       - name: 创建必要目录
         run: |
           mkdir -p data logs reports
