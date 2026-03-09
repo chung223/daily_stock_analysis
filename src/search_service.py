@@ -1099,7 +1099,14 @@ class SearchService:
 
         # 构建搜索查询（优化搜索效果）
         is_foreign = self._is_foreign_stock(stock_code)
-        if focus_keywords:
+        # 強制使用臺灣大盤關鍵字
+        if "臺灣大盤" in stock_name or "台股" in stock_name:
+            if focus_keywords:
+                # 保持 focus_keywords 但確保用臺灣術語
+                query = " ".join(focus_keywords)
+            else:
+                query = "台股 大盤 復盤"
+        elif focus_keywords:
             # 如果提供了关键词，直接使用关键词作为查询
             query = " ".join(focus_keywords)
         elif is_foreign:
