@@ -56,7 +56,7 @@ class PushoverSender:
         
         Args:
             content: 消息内容（Markdown 格式，会转为纯文本）
-            title: 消息标题（可选，默认为"股票分析报告"）
+            title: 訊息標題（可选，默认为"股票分析報告"）
             
         Returns:
             是否发送成功
@@ -71,10 +71,10 @@ class PushoverSender:
         # Pushover API 端点
         api_url = "https://api.pushover.net/1/messages.json"
         
-        # 处理消息标题
+        # 处理訊息標題
         if title is None:
             date_str = datetime.now().strftime('%Y-%m-%d')
-            title = f"📈 股票分析报告 - {date_str}"
+            title = f"📈 股票分析報告 - {date_str}"
         
         # Pushover 消息限制 1024 字符
         max_length = 1024
@@ -106,7 +106,7 @@ class PushoverSender:
             user_key: 用户 Key
             api_token: 应用 API Token
             message: 消息内容
-            title: 消息标题
+            title: 訊息標題
             priority: 优先级 (-2 ~ 2，默认 0)
         """
         try:

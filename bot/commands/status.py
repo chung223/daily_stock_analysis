@@ -4,7 +4,7 @@
 状态命令
 ===================================
 
-显示系统运行状态和配置信息。
+显示系统运行状态和設定信息。
 """
 
 import platform
@@ -22,7 +22,7 @@ class StatusCommand(BotCommand):
     
     显示系统运行状态，包括：
     - 服务状态
-    - 配置信息
+    - 設定信息
     - 可用功能
     """
     
@@ -36,7 +36,7 @@ class StatusCommand(BotCommand):
     
     @property
     def description(self) -> str:
-        return "显示系统状态"
+        return "显示系統狀態"
     
     @property
     def usage(self) -> str:
@@ -57,7 +57,7 @@ class StatusCommand(BotCommand):
         return BotResponse.markdown_response(text)
     
     def _collect_status(self, config) -> dict:
-        """收集系统状态信息"""
+        """收集系統狀態信息"""
         status = {
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
@@ -66,7 +66,7 @@ class StatusCommand(BotCommand):
             "stock_list": config.stock_list[:5],  # 只显示前5个
         }
         
-        # AI 配置状态
+        # AI 設定状态
         status["ai_gemini"] = bool(config.gemini_api_key)
         status["ai_openai"] = bool(config.openai_api_key)
         
@@ -90,7 +90,7 @@ class StatusCommand(BotCommand):
             return "✅" if enabled else "❌"
         
         lines = [
-            "📊 **股票分析助手 - 系统状态**",
+            "📊 **股票分析助手 - 系統狀態**",
             "",
             f"🕐 时间: {status['timestamp']}",
             f"🐍 Python: {status['python_version']}",
@@ -98,7 +98,7 @@ class StatusCommand(BotCommand):
             "",
             "---",
             "",
-            "**📈 自选股配置**",
+            "**📈 自选股設定**",
             f"• 股票数量: {status['stock_count']} 只",
         ]
         
@@ -106,7 +106,7 @@ class StatusCommand(BotCommand):
             stocks_preview = ", ".join(status['stock_list'])
             if status['stock_count'] > 5:
                 stocks_preview += f" ... 等 {status['stock_count']} 只"
-            lines.append(f"• 股票列表: {stocks_preview}")
+            lines.append(f"• 股票清單: {stocks_preview}")
         
         lines.extend([
             "",
@@ -123,7 +123,7 @@ class StatusCommand(BotCommand):
             f"• 企业微信: {icon(status['notify_wechat'])}",
             f"• 飞书: {icon(status['notify_feishu'])}",
             f"• Telegram: {icon(status['notify_telegram'])}",
-            f"• 邮件: {icon(status['notify_email'])}",
+            f"• 郵件: {icon(status['notify_email'])}",
         ])
         
         # AI 服务总体状态
@@ -132,14 +132,14 @@ class StatusCommand(BotCommand):
             lines.extend([
                 "",
                 "---",
-                "✅ **系统就绪，可以开始分析！**",
+                "✅ **系統就緒，可以开始分析！**",
             ])
         else:
             lines.extend([
                 "",
                 "---",
-                "⚠️ **AI 服务未配置，分析功能不可用**",
-                "请配置 Gemini 或 OpenAI API Key",
+                "⚠️ **AI 服务未設定，分析功能不可用**",
+                "请設定 Gemini 或 OpenAI API Key",
             ])
         
         return "\n".join(lines)

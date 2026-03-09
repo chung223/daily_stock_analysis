@@ -36,7 +36,7 @@ class PushplusSender:
         POST http://www.pushplus.plus/send
         {
             "token": "用户令牌",
-            "title": "消息标题",
+            "title": "訊息標題",
             "content": "消息内容",
             "template": "html/txt/json/markdown"
         }
@@ -48,7 +48,7 @@ class PushplusSender:
 
         Args:
             content: 消息内容（Markdown 格式）
-            title: 消息标题（可选）
+            title: 訊息標題（可选）
 
         Returns:
             是否发送成功
@@ -60,10 +60,10 @@ class PushplusSender:
         # PushPlus API 端点
         api_url = "http://www.pushplus.plus/send"
 
-        # 处理消息标题
+        # 处理訊息標題
         if title is None:
             date_str = datetime.now().strftime('%Y-%m-%d')
-            title = f"📈 股票分析报告 - {date_str}"
+            title = f"📈 股票分析報告 - {date_str}"
 
         try:
             payload = {

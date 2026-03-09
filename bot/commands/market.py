@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 ===================================
-大盘复盘命令
+大盤複盤命令
 ===================================
 
-执行大盘复盘分析，生成市场概览报告。
+执行大盤複盤分析，生成市场概览報告。
 """
 
 import logging
@@ -19,16 +19,16 @@ logger = logging.getLogger(__name__)
 
 class MarketCommand(BotCommand):
     """
-    大盘复盘命令
+    大盤複盤命令
     
-    执行大盘复盘分析，包括：
+    执行大盤複盤分析，包括：
     - 主要指数表现
     - 板块热点
     - 市场情绪
     - 后市展望
     
     用法：
-        /market - 执行大盘复盘
+        /market - 执行大盤複盤
     """
 
     @property
@@ -41,15 +41,15 @@ class MarketCommand(BotCommand):
 
     @property
     def description(self) -> str:
-        return "大盘复盘分析"
+        return "大盤複盤分析"
 
     @property
     def usage(self) -> str:
         return "/market"
 
     def execute(self, message: BotMessage, args: List[str]) -> BotResponse:
-        """执行大盘复盘命令"""
-        logger.info(f"[MarketCommand] 开始大盘复盘分析")
+        """执行大盤複盤命令"""
+        logger.info(f"[MarketCommand] 开始大盤複盤分析")
 
         # 在后台线程中执行复盘（避免阻塞）
         thread = threading.Thread(
@@ -60,17 +60,17 @@ class MarketCommand(BotCommand):
         thread.start()
 
         return BotResponse.markdown_response(
-            "✅ **大盘复盘任务已启动**\n\n"
+            "✅ **大盤複盤任務已启动**\n\n"
             "正在分析：\n"
             "• 主要指数表现\n"
             "• 板块热点分析\n"
-            "• 市场情绪判断\n"
+            "• 市場情緒判斷\n"
             "• 后市展望\n\n"
-            "分析完成后将自动推送结果。"
+            "分析完成后将自动推播结果。"
         )
 
     def _run_market_review(self, message: BotMessage) -> None:
-        """后台执行大盘复盘"""
+        """后台执行大盤複盤"""
         try:
             from src.config import get_config
             from src.notification import NotificationService
@@ -97,7 +97,7 @@ class MarketCommand(BotCommand):
             if config.gemini_api_key or config.openai_api_key:
                 analyzer = GeminiAnalyzer()
 
-            # 读取配置中的市场区域，与定时任务/CLI 保持一致
+            # 读取設定中的市场区域，与定时任務/CLI 保持一致
             region = getattr(config, 'market_review_region', 'cn')
 
             # 执行复盘
@@ -110,13 +110,13 @@ class MarketCommand(BotCommand):
             review_report = market_analyzer.run_daily_review()
 
             if review_report:
-                # 推送结果
-                report_content = f"🎯 **大盘复盘**\n\n{review_report}"
+                # 推播结果
+                report_content = f"🎯 **大盤複盤**\n\n{review_report}"
                 notifier.send(report_content, email_send_to_all=True)
-                logger.info("[MarketCommand] 大盘复盘完成并已推送")
+                logger.info("[MarketCommand] 大盤複盤完成并已推播")
             else:
-                logger.warning("[MarketCommand] 大盘复盘返回空结果")
+                logger.warning("[MarketCommand] 大盤複盤返回空结果")
 
         except Exception as e:
-            logger.error(f"[MarketCommand] 大盘复盘失败: {e}")
+            logger.error(f"[MarketCommand] 大盤複盤失敗: {e}")
             logger.exception(e)

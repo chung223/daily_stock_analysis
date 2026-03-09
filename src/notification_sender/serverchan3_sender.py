@@ -37,7 +37,7 @@ class Serverchan3Sender:
         或
         POST https://{num}.push.ft07.com/send/{sendkey}.send
         {
-            "title": "消息标题",
+            "title": "訊息標題",
             "desp": "消息内容",
             "options": {}
         }
@@ -48,7 +48,7 @@ class Serverchan3Sender:
 
         Args:
             content: 消息内容（Markdown 格式）
-            title: 消息标题（可选）
+            title: 訊息標題（可选）
 
         Returns:
             是否发送成功
@@ -57,10 +57,10 @@ class Serverchan3Sender:
             logger.warning("Server酱3 SendKey 未配置，跳过推送")
             return False
 
-        # 处理消息标题
+        # 处理訊息標題
         if title is None:
             date_str = datetime.now().strftime('%Y-%m-%d')
-            title = f"📈 股票分析报告 - {date_str}"
+            title = f"📈 股票分析報告 - {date_str}"
 
         try:
             # 根据 sendkey 格式构造 URL

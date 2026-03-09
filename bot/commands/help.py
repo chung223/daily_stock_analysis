@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 ===================================
-帮助命令
+說明命令
 ===================================
 
 显示可用命令列表和使用说明。
@@ -15,7 +15,7 @@ from bot.models import BotMessage, BotResponse
 
 class HelpCommand(BotCommand):
     """
-    帮助命令
+    說明命令
     
     显示所有可用命令的列表和使用说明。
     也可以查看特定命令的详细帮助。
@@ -35,14 +35,14 @@ class HelpCommand(BotCommand):
     
     @property
     def description(self) -> str:
-        return "显示帮助信息"
+        return "顯示說明資訊"
     
     @property
     def usage(self) -> str:
         return "/help [命令名]"
     
     def execute(self, message: BotMessage, args: List[str]) -> BotResponse:
-        """执行帮助命令"""
+        """执行說明命令"""
         # 延迟导入避免循环依赖
         from bot.dispatcher import get_dispatcher
         
@@ -77,10 +77,10 @@ class HelpCommand(BotCommand):
         ]
         
         for cmd in commands:
-            # 命令名和别名
+            # 命令名和別名
             aliases_str = ""
             if cmd.aliases:
-                # 过滤掉中文别名，只显示英文别名
+                # 过滤掉中文別名，只显示英文別名
                 en_aliases = [a for a in cmd.aliases if a.isascii()]
                 if en_aliases:
                     aliases_str = f" ({', '.join(prefix + a for a in en_aliases[:2])})"
@@ -97,7 +97,7 @@ class HelpCommand(BotCommand):
             "",
             f"• {prefix}analyze 301023 - 奕帆传动",
             "",
-            f"• {prefix}market - 查看大盘复盘",
+            f"• {prefix}market - 查看大盤複盤",
             "",
             f"• {prefix}batch - 批量分析自选股",
         ])
@@ -113,15 +113,15 @@ class HelpCommand(BotCommand):
             "",
         ]
         
-        # 别名
+        # 別名
         if command.aliases:
             aliases = [f"`{prefix}{a}`" if a.isascii() else f"`{a}`" for a in command.aliases]
-            lines.append(f"**别名：** {', '.join(aliases)}")
+            lines.append(f"**別名：** {', '.join(aliases)}")
             lines.append("")
         
         # 权限
         if command.admin_only:
-            lines.append("⚠️ **需要管理员权限**")
+            lines.append("⚠️ **需要管理員權限**")
             lines.append("")
         
         return "\n".join(lines)
