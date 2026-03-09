@@ -301,18 +301,18 @@ class YfinanceFetcher(BaseFetcher):
         import yfinance as yf
 
         if region == "us":
-            return self._get_tw_main_indices(yf)
-        elif region == "tw":
             return self._get_us_main_indices(yf)
+        elif region == "tw":
+            return self._get_tw_main_indices(yf)
 
         # A 股指数：akshare 代码 -> (yfinance 代码, 显示名称)
         yf_mapping = {
-            'sh000001': ('000001.SS', '上证指数'),
-            'sz399001': ('399001.SZ', '深证成指'),
-            'sz399006': ('399006.SZ', '创业板指'),
-            'sh000688': ('000688.SS', '科创50'),
-            'sh000016': ('000016.SS', '上证50'),
-            'sh000300': ('000300.SS', '沪深300'),
+            'sh000001': ('000001.SS', '上證指數'),
+            'sz399001': ('399001.SZ', '深證成指'),
+            'sz399006': ('399006.SZ', '創業板指'),
+            'sh000688': ('000688.SS', '科創50'),
+            'sh000016': ('000016.SS', '上證50'),
+            'sh000300': ('000300.SS', '滬深300'),
         }
 
         results = []
@@ -366,7 +366,7 @@ class YfinanceFetcher(BaseFetcher):
         """获取臺灣主要指数行情（加权、台湾50、航运、电子等）"""
         # 臺灣主要指数
         tw_indices = {
-            '^TWII': ('^TWII', '加权指数'),
+            '^TWII': ('^TWII', '加權指數'),
             '0050.TW': ('0050.TW', '元大臺灣50'),
             '0056.TW': ('0056.TW', '元大高股息'),
             '2317.TW': ('2317.TW', '廣達'),
