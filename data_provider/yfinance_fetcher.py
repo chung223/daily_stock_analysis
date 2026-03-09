@@ -301,6 +301,8 @@ class YfinanceFetcher(BaseFetcher):
         import yfinance as yf
 
         if region == "us":
+            return self._get_tw_main_indices(yf)
+        elif region == "tw":
             return self._get_us_main_indices(yf)
 
         # A 股指数：akshare 代码 -> (yfinance 代码, 显示名称)
@@ -358,6 +360,37 @@ class YfinanceFetcher(BaseFetcher):
         except Exception as e:
             logger.error(f"[Yfinance] 获取美股指数行情失败: {e}")
 
+        return None
+
+    def _get_tw_main_indices(self, yf) -> Optional[List[Dict[str, Any]]]:
+        """获取臺灣主要指数行情（加权、台湾50、航运、电子等）"""
+        # 臺灣主要指数
+        tw_indices = {
+            '^TWII': ('^TWII', '加权指数'),
+            '0050.TW': ('0050.TW', '元大臺灣50'),
+            '0056.TW': ('0056.TW', '元大高股息'),
+            '2317.TW': ('2317.TW', '廣達'),
+            '2454.TW': ('2454.TW', '聯發科'),
+        }
+        
+        results = []
+        try:
+            for yf_code, name in tw_indices.values():
+                try:
+                    item = self._fetch_yf_ticker_data(yf, yf_code, name, yf_code)
+                    if item:
+                        results.append(item)
+                        logger.debug(f"[Yfinance] 获取臺灣指数 {name} 成功")
+                except Exception as e:
+                    logger.warning(f"[Yfinance] 获取臺灣指数 {name} 失败: {e}")
+            
+            if results:
+                logger.info(f"[Yfinance] 成功获取 {len(results)} 个臺灣指数行情")
+                return results
+                
+        except Exception as e:
+            logger.error(f"[Yfinance] 获取臺灣指数行情失败: {e}")
+        
         return None
 
     def _is_us_stock(self, stock_code: str) -> bool:
