@@ -1026,6 +1026,14 @@ class DataFetcherManager:
         if stock_code in STOCK_NAME_MAP:
             return STOCK_NAME_MAP[stock_code]
 
+        # 台股名稱查詢
+        from .us_index_mapping import is_tw_stock_code, get_tw_stock_name
+        if is_tw_stock_code(stock_code):
+            tw_name = get_tw_stock_name(stock_code)
+            if tw_name:
+                logger.info(f"[股票名称] 从台股映射获取: {stock_code} -> {tw_name}")
+                return tw_name
+
         # 1. 先检查缓存
         if hasattr(self, '_stock_name_cache') and stock_code in self._stock_name_cache:
             return self._stock_name_cache[stock_code]
