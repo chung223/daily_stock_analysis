@@ -56,7 +56,7 @@ TW_STOCK_NAME_MAPPING = {
     '0050': '元大台灣50',
     '0051': '元大中型100',
     '0052': '富邦科技',
-    '0053': '元化高息',
+    '0053': '元大高股息',
     '0054': '元大炬',
     '0055': '元大高股息',
     '0056': '元大高股息低波',
@@ -86,37 +86,37 @@ TW_STOCK_NAME_MAPPING = {
 
 # 台股指數映射
 TW_INDEX_MAPPING = {
-    'TWII': ('^TWII', '加权指数'),
-    '^TWII': ('^TWII', '加权指数'),
-    'TAIEX': ('^TWII', '加权指数'),
-    '加权指数': ('^TWII', '加权指数'),
-    '台股': ('^TWII', '加权指数'),
+    'TWII': ('^TWII', '加權指數'),
+    '^TWII': ('^TWII', '加權指數'),
+    'TAIEX': ('^TWII', '加權指數'),
+    '加權指數': ('^TWII', '加權指數'),
+    '台股': ('^TWII', '加權指數'),
 }
 
 
 # 用户输入 -> (Yahoo Finance 符号, 中文名称)
 US_INDEX_MAPPING = {
     # 标普 500
-    'SPX': ('^GSPC', '标普500指数'),
-    '^GSPC': ('^GSPC', '标普500指数'),
-    'GSPC': ('^GSPC', '标普500指数'),
-    # 道琼斯工业平均指数
-    'DJI': ('^DJI', '道琼斯工业指数'),
-    '^DJI': ('^DJI', '道琼斯工业指数'),
-    'DJIA': ('^DJI', '道琼斯工业指数'),
-    # 纳斯达克综合指数
-    'IXIC': ('^IXIC', '纳斯达克综合指数'),
-    '^IXIC': ('^IXIC', '纳斯达克综合指数'),
-    'NASDAQ': ('^IXIC', '纳斯达克综合指数'),
+    'SPX': ('^GSPC', '標普500指數'),
+    '^GSPC': ('^GSPC', '標普500指數'),
+    'GSPC': ('^GSPC', '標普500指數'),
+    # 道瓊斯工業平均指數
+    'DJI': ('^DJI', '道瓊斯工業指數'),
+    '^DJI': ('^DJI', '道瓊斯工業指數'),
+    'DJIA': ('^DJI', '道瓊斯工業指數'),
+    # 納斯達克綜合指數
+    'IXIC': ('^IXIC', '納斯達克綜合指數'),
+    '^IXIC': ('^IXIC', '納斯達克綜合指數'),
+    'NASDAQ': ('^IXIC', '納斯達克綜合指數'),
     # 纳斯达克 100
-    'NDX': ('^NDX', '纳斯达克100指数'),
-    '^NDX': ('^NDX', '纳斯达克100指数'),
+    'NDX': ('^NDX', '納斯達克100指數'),
+    '^NDX': ('^NDX', '納斯達克100指數'),
     # VIX 波动率指数
-    'VIX': ('^VIX', 'VIX恐慌指数'),
-    '^VIX': ('^VIX', 'VIX恐慌指数'),
+    'VIX': ('^VIX', 'VIX恐慌指數'),
+    '^VIX': ('^VIX', 'VIX恐慌指數'),
     # 罗素 2000
-    'RUT': ('^RUT', '罗素2000指数'),
-    '^RUT': ('^RUT', '罗素2000指数'),
+    'RUT': ('^RUT', '羅素2000指數'),
+    '^RUT': ('^RUT', '羅素2000指數'),
 }
 
 
@@ -316,7 +316,7 @@ def get_tw_index_yf_symbol(code: str) -> tuple:
 
     Examples:
         >>> get_tw_index_yf_symbol('TWII')
-        ('^TWII', '加权指数')
+        ('^TWII', '加權指數')
         >>> get_tw_index_yf_symbol('0050')
         (None, None)
     """
@@ -336,7 +336,7 @@ def get_us_index_yf_symbol(code: str) -> tuple:
 
     Examples:
         >>> get_us_index_yf_symbol('SPX')
-        ('^GSPC', '标普500指数')
+        ('^GSPC', '標普500指數')
         >>> get_us_index_yf_symbol('AAPL')
         (None, None)
     """
