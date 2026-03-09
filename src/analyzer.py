@@ -483,6 +483,19 @@ class GeminiAnalyzer:
                 "entry_plan": "分批建仓策略描述",
                 "risk_control": "风控策略描述"
             },
+            
+            "pre_market_advice": {
+                "opening_recommendation": "开盘操作建议：追高/观望/低吸/按兵不动",
+                "key_observation": "开盘重点观察：量价配合/支撑压力/板块动向",
+                "price_alert": {
+                    "upside": "若高开超过X%，考虑XXX",
+                    "downside": "若低开超过X%，考虑XXX"
+                },
+                "support_level": "今日关键支撑位",
+                "resistance_level": "今日关键压力位",
+                "trade_timing": "最佳交易时段：早盘/午盘/尾盘"
+            },
+
             "action_checklist": [
                 "✅/⚠️/❌ 检查项1：多头排列",
                 "✅/⚠️/❌ 检查项2：乖离率合理（强势趋势可放宽）",
