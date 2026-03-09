@@ -1129,7 +1129,7 @@ _FIELD_DEFINITIONS: Dict[str, Dict[str, Any]] = {
     },
     "MARKET_REVIEW_REGION": {
         "title": "Market Review Region",
-        "description": "Market region for review: cn (A-shares), us (US stocks), or both.",
+        "description": "Market region for review: cn (A股), us (美股), tw (臺股), or both.",
         "category": "system",
         "data_type": "string",
         "ui_control": "select",
@@ -1137,8 +1137,8 @@ _FIELD_DEFINITIONS: Dict[str, Dict[str, Any]] = {
         "is_required": False,
         "is_editable": True,
         "default_value": "cn",
-        "options": ["cn", "us", "both"],
-        "validation": {"enum": ["cn", "us", "both"]},
+        "options": ["cn", "us", "tw", "both"],
+        "validation": {"enum": ["cn", "us", "tw", "both"]},
         "display_order": 47,
     },
     "MAX_WORKERS": {

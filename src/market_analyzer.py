@@ -107,7 +107,7 @@ class MarketAnalyzer:
         self.search_service = search_service
         self.analyzer = analyzer
         self.data_manager = DataFetcherManager()
-        self.region = region if region in ("cn", "us") else "cn"
+        self.region = region if region in ("cn", "us", "tw") else "cn"
         self.profile: MarketProfile = get_profile(self.region)
         self.strategy = get_market_strategy_blueprint(self.region)
 
@@ -258,7 +258,7 @@ class MarketAnalyzer:
             logger.info("[大盘] 开始搜索市场新闻...")
             
             # 根据 region 设置搜索上下文名称，避免美股搜索被解读为 A 股语境
-            market_name = "大盘" if self.region == "cn" else "US market"
+            market_name = {"cn": "大盤", "us": "美股", "tw": "臺灣大盤"}[self.region]
             for query in search_queries:
                 response = self.search_service.search_stock_news(
                     stock_code="market",
@@ -651,7 +651,7 @@ Output the report content directly, no extra commentary.
 - **领涨**: {top_text}
 - **领跌**: {bottom_text}
 """
-        market_label = "A股" if self.region == "cn" else "美股"
+        market_label = {"cn": "A股", "us": "美股", "tw": "臺股"}[self.region]
         strategy_summary = self.strategy.to_markdown_block()
         report = f"""## {overview.date} 大盘复盘
 
