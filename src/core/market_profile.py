@@ -14,8 +14,8 @@ from typing import List
 class MarketProfile:
     """大盘复盘市场区域配置"""
 
-    region: str  # "cn" | "us"
-    # 用于判断整体走势的指数代码，cn 用上证 000001，us 用标普 SPX
+    region: str  # "cn" | "us" | "tw"
+    # 用于判断整体走势的指数代码，cn 用上证 000001，us 用标普 SPX，tw 用加權指數
     mood_index_code: str
     # 新闻搜索关键词
     news_queries: List[str]
@@ -53,9 +53,24 @@ US_PROFILE = MarketProfile(
     has_sector_rankings=False,
 )
 
+TW_PROFILE = MarketProfile(
+    region="tw",
+    mood_index_code="TWII",
+    news_queries=[
+        "台股 大盤 復盤",
+        "臺灣加權指數 行情",
+        "台股 市場 熱點 類股",
+    ],
+    prompt_index_hint="分析臺灣加權指數、櫃買指數等各指數走勢特點",
+    has_market_stats=True,
+    has_sector_rankings=True,
+)
+
 
 def get_profile(region: str) -> MarketProfile:
     """根据 region 返回对应的 MarketProfile"""
+    if region == "tw":
+        return TW_PROFILE
     if region == "us":
         return US_PROFILE
     return CN_PROFILE
