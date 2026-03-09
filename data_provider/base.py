@@ -108,6 +108,12 @@ def normalize_stock_code(stock_code: str) -> str:
         if suffix.upper() in ('SH', 'SZ', 'SS', 'BJ') and base.isdigit():
             return base
 
+    # Strip .TW/.TWO suffix for Taiwan stocks (e.g. 2330.TW -> 2330)
+    if '.' in code:
+        base, suffix = code.rsplit('.', 1)
+        if suffix.upper() in ('TW', 'TWO'):
+            return base
+
     return code
 
 
